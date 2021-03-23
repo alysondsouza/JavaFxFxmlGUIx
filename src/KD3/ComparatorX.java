@@ -1,4 +1,4 @@
-package KDTree;
+package KD3;
 
 import java.util.Comparator;
 

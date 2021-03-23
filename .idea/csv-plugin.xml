@@ -31,6 +31,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\src\RangeSearch\Model.java">
+          <value>
+            <Attribute>
+              <option name="separator" value=";" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\src\example\FXMLexample.fxml">
           <value>
             <Attribute>

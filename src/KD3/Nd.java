@@ -1,4 +1,4 @@
-package KDTree;
+package KD3;
 
 public class Nd {
     long id;

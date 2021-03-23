@@ -1,4 +1,4 @@
-package KDTree;
+package RangeSearch;
 
 public class TreeNodes {
     private TreeNodes left;

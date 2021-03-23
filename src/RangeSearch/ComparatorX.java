@@ -1,13 +1,13 @@
-package KDTree;
+package RangeSearch;
 
 import java.util.Comparator;
 
-public class ComparatorY implements Comparator<Nd> {
+public class ComparatorX implements Comparator<Nd> {
     @Override
     public int compare(Nd o1, Nd o2) { //lon = x //lat = y
-        if (o1.getLat() < o2.getLat()) {
+        if (o1.getLon() < o2.getLon()) {
             return -1;
-        } else if (o1.getLat() > o2.getLat()) {
+        } else if (o1.getLon() > o2.getLon()) {
             return 1;
         }
         return 0;
