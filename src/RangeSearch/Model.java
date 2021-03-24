@@ -19,8 +19,8 @@ public class Model extends Application {
     ComparatorY compY = new ComparatorY();
     Group root;
     Canvas canvas;
-    int strokeV = 200;
-    int strokeH = 200;
+    int strokeV = 220;
+    int strokeH = 220;
     Nd[] nd;
     ArrayList<Nd> returnedReportSubtree = new ArrayList<>();
     ArrayList<Nd> returnedRange = new ArrayList<>();
@@ -35,6 +35,8 @@ public class Model extends Application {
         Scene scene = new Scene(root);
         canvas = new Canvas(1200, 1000);
 
+        //RANDOM KD-TREE
+        /*
         for (int i = 0; i < 10; i++) {
             Random rd = new Random();
             float randomX = rd.nextFloat() * 1000;
@@ -43,31 +45,87 @@ public class Model extends Application {
             nodes.add(node);
             makeCircles(canvas, node);
         }
-        makeRangeSquare(getCanvas(), nodes.get(2));
+        */
+
+        //FIXED KD-TREE
+        Nd node = new Nd(1, 300.0f, 600.0f);
+        nodes.add(node);
+        makeCircles(canvas, node);
+        node = new Nd(2, 500.0f, 400.0f);
+        nodes.add(node);
+        makeCircles(canvas, node);
+        node = new Nd(3, 700.0f, 900.0f);
+        nodes.add(node);
+        makeCircles(canvas, node);
+        node = new Nd(4, 200.0f, 300.0f);
+        nodes.add(node);
+        makeCircles(canvas, node);
+        node = new Nd(5, 800.0f, 300.0f);
+        nodes.add(node);
+        makeCircles(canvas, node);
+        node = new Nd(6, 200.0f, 800.0f);
+        nodes.add(node);
+        makeCircles(canvas, node);
+        node = new Nd(7, 900.0f, 800.0f);
+        nodes.add(node);
+        makeCircles(canvas, node);
+        node = new Nd(8, 100.0f, 100.0f);
+        nodes.add(node);
+        makeCircles(canvas, node);
+        node = new Nd(9, 200.0f, 500.0f);
+        nodes.add(node);
+        makeCircles(canvas, node);
+        node = new Nd(10, 600.0f, 200.0f);
+        nodes.add(node);
+        makeCircles(canvas, node);
+        node = new Nd(11, 700.0f, 400.0f);
+        nodes.add(node);
+        makeCircles(canvas, node);
+        node = new Nd(12, 400.0f, 700.0f);
+        nodes.add(node);
+        makeCircles(canvas, node);
+        node = new Nd(13, 600.0f, 800.0f);
+        nodes.add(node);
+        makeCircles(canvas, node);
+        node = new Nd(14, 800.0f, 700.0f);
+        nodes.add(node);
+        makeCircles(canvas, node);
+
+
+        //YELLOW RANGE SQUARE
+        makeRangeSquare(getCanvas());
         nd = new Nd[nodes.size()];
 
+        //KD-TREE
         TreeNodes v = buildKDTree(nodes, 0);
 
-        System.out.println("\nPRINT REPORTSUBTREE:");
+        //REPORT()
+        System.out.println("\nPRINT REPORTSUBTREE: (ALL LEAVES)");
         for (Nd n : reportSubTree(v)) {
             System.out.println(n);
         }
 
+        //RANGE()
         System.out.println("\nPRINT RANGE:");
-        Nd n1 = new Nd(11, 200, 200);
-        Nd n2 = new Nd(12, 400, 400);
+        Nd n1 = new Nd(11, 50, 50);
+        Nd n2 = new Nd(12, 150, 150);
         searchRange(v, n1, n2);
+        for (Nd n : returnedRange) {
+            System.out.println(n);
+        }
 
+
+        //STAGE
         root.getChildren().add(canvas);
         primaryStage.setTitle("RangeSearch");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    private void makeRangeSquare(Canvas canvas, Nd node) {
+    private void makeRangeSquare(Canvas canvas) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.YELLOW);
-        gc.fillRect(200, 200, 400, 400); //lon = x //lat = y
+        gc.fillRect(50, 50, 150, 150); //lon = x //lat = y
     }
 
     private void makeCircles(Canvas canvas, Nd node) {
@@ -95,6 +153,7 @@ public class Model extends Application {
         gc.strokeLine(node.getLon() + (strokeH + 10), node.getLat() + 5, node.getLon() - strokeH, node.getLat() + 5);
         strokeH -= 40;
     }
+
 
     public TreeNodes buildKDTree(ArrayList<Nd> nodes, int depth) {
         boolean leaf = false;
@@ -152,6 +211,7 @@ public class Model extends Application {
         return v;
     }
 
+
     private ArrayList<Nd> reportSubTree(TreeNodes root) {
         if (root.getLeft() == null && root.getRight() == null) {
             returnedReportSubtree.add(root.getNode()); //leaf
@@ -165,34 +225,51 @@ public class Model extends Application {
         return returnedReportSubtree;
     }
 
-    public ArrayList<Nd> searchRange(TreeNodes root, Nd n1, Nd n2) {
 
+    public ArrayList<Nd> searchRange(TreeNodes root, Nd n1, Nd n2) {
+        boolean rangeX = root.getNode().getLon() > n1.getLon() && root.getNode().getLon() < n2.getLon();
+        boolean rangeY = root.getNode().getLat() > n1.getLat() && root.getNode().getLat() < n2.getLat();
+
+        if (rangeX && rangeY) {
+            returnedRange = reportSubTree(root);
+            for (Nd n : returnedRange) {
+                System.out.println(n);
+            }
+
+        }
+        if (root.getLeft() == null && root.getRight() == null){
+            searchRange(root.getLeft(), n1, n2);
+        } else if (root.getLeft() != null && root.getRight() == null){
+            searchRange(root.getLeft(), n1, n2);
+            searchRange(root.getRight(), n1, n2);
+        }
+
+        /*
 
         if (root.getLeft() == null && root.getRight() == null) { //lon = x; lat = y
             returnedRange.add(root.getNode()); //leaf
             makeRedCircles(getCanvas(), root.getNode());//mark red
+
         } else if (root.getLeft() != null && root.getRight() == null) {
-            boolean rangeX = root.getNode().getLon() > n1.getLon() && root.getNode().getLon() < n2.getLon();
-            boolean rangeY = root.getNode().getLat() > n1.getLat() && root.getNode().getLat() < n2.getLat();
+            rangeX = root.getNode().getLon() > n1.getLon() && root.getNode().getLon() < n2.getLon();
+            rangeY = root.getNode().getLat() > n1.getLat() && root.getNode().getLat() < n2.getLat();
+
             if ((rangeX && rangeY)) {
                 reportSubTree(root.getLeft());
             }
         } else {
-            boolean rangeX = root.getNode().getLon() > n1.getLon() && root.getNode().getLon() < n2.getLon();
-            boolean rangeY = root.getNode().getLat() > n1.getLat() && root.getNode().getLat() < n2.getLat();
-            if ((rangeX && rangeY)) {
-                reportSubTree(root);
-            } else {
-                searchRange(root.getLeft(), n1 , n2);
-            }
             rangeX = root.getNode().getLon() > n1.getLon() && root.getNode().getLon() < n2.getLon();
             rangeY = root.getNode().getLat() > n1.getLat() && root.getNode().getLat() < n2.getLat();
-            if ((rangeX && rangeY)) {
+
+            if (rangeX && rangeY) {
                 reportSubTree(root);
             } else {
-                searchRange(root.getRight(), n1 , n2);
+                searchRange(root.getLeft(), n1, n2);
+                searchRange(root.getRight(), n1, n2);
             }
         }
+        */
+
         return returnedRange;
     }
 
